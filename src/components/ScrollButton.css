@@ -92,7 +92,7 @@
 
 .scroll-button-secondary {
   background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
-  color: var(--text-primary);
+  color: var(--dark-bg);
   border-color: var(--accent-secondary);
 }
 
@@ -108,7 +108,7 @@
 
 .scroll-button-ghost:hover {
   background: var(--accent-primary);
-  color: var(--text-primary);
+  color: var(--dark-bg);
 }
 
 .scroll-button.disabled {
