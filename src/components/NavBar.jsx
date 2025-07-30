@@ -47,6 +47,19 @@ const NavBar = () => {
               )}
             </Link>
           ))}
+          
+          <Link
+            to="/auth"
+            className={`nav-button auth-button ${isActive('/auth') ? 'active' : ''}`}
+            onMouseEnter={() => setHoveredItem('auth')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{ textDecoration: 'none' }}
+          >
+            Log In
+            {hoveredItem === 'auth' && (
+              <div className="nav-hover-effect"></div>
+            )}
+          </Link>
         </div>
       </div>
     </nav>

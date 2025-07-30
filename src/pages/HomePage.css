@@ -437,6 +437,7 @@
   color: var(--text-primary);
   padding: 5px 10px;
   border-radius: var(--border-radius);
+  font-family: var(--font-primary);
   font-size: 12px;
   white-space: nowrap;
   opacity: 0;

@@ -69,6 +69,24 @@
   box-shadow: var(--shadow-soft);
 }
 
+.auth-button {
+  background: var(--text-primary) !important;
+  color: var(--dark-bg) !important;
+  border-color: var(--text-primary) !important;
+}
+
+.auth-button:hover {
+  background: var(--accent-secondary) !important;
+  color: var(--dark-bg) !important;
+  border-color: var(--accent-secondary) !important;
+}
+
+.auth-button.active {
+  background: var(--accent-secondary) !important;
+  color: var(--dark-bg) !important;
+  border-color: var(--accent-secondary) !important;
+}
+
 .nav-hover-effect {
   position: absolute;
   top: 0;
