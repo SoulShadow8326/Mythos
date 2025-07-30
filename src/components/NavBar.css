@@ -3,7 +3,7 @@
   box-shadow: var(--shadow-deep);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 9999;
   border-bottom: 1px solid var(--card-border);
   width: 100%;
 }

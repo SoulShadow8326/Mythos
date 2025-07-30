@@ -27,6 +27,8 @@ const HomePage = () => {
   }, [fullText]);
 
   useEffect(() => {
+    let scrollThreshold = 0;
+
     const handleScroll = () => {
       const heroSection = document.getElementById('hero');
       const quickStartSection = document.getElementById('quick-start');
@@ -40,18 +42,49 @@ const HomePage = () => {
       const quickStartTop = quickStartSection.offsetTop;
       const creativeJourneyTop = creativeJourneySection.offsetTop;
       
-      if (scrollPosition < quickStartTop) {
+      if (scrollPosition < creativeJourneyTop) {
         setActiveSection('hero');
-      } else if (scrollPosition < creativeJourneyTop) {
-        setActiveSection('quick-start');
-      } else {
+      } else if (scrollPosition < quickStartTop) {
         setActiveSection('creative-journey');
+      } else {
+        setActiveSection('quick-start');
+      }
+    };
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      
+      // Reduce scroll sensitivity by 75% - require more scroll movement
+      scrollThreshold += Math.abs(e.deltaY) * 0.25;
+      
+      if (scrollThreshold < 100) return; // Need more scroll to trigger
+      
+      scrollThreshold = 0; // Reset threshold
+      
+      const sections = ['hero', 'creative-journey', 'quick-start'];
+      const currentIndex = sections.indexOf(activeSection);
+      
+      if (e.deltaY > 0 && currentIndex < sections.length - 1) {
+        // Scroll down
+        const nextSection = document.getElementById(sections[currentIndex + 1]);
+        nextSection?.scrollIntoView({ behavior: 'smooth' });
+        setActiveSection(sections[currentIndex + 1]);
+      } else if (e.deltaY < 0 && currentIndex > 0) {
+        // Scroll up
+        const prevSection = document.getElementById(sections[currentIndex - 1]);
+        prevSection?.scrollIntoView({ behavior: 'smooth' });
+        setActiveSection(sections[currentIndex - 1]);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [activeSection]);
 
 
 
@@ -119,36 +152,18 @@ const HomePage = () => {
             title="Hero Section"
           ></button>
           <button 
-            className={`nav-dot ${activeSection === 'quick-start' ? 'active' : ''}`}
-            onClick={() => document.getElementById('quick-start').scrollIntoView({ behavior: 'smooth' })}
-            title="Quick Start"
-          ></button>
-          <button 
             className={`nav-dot ${activeSection === 'creative-journey' ? 'active' : ''}`}
             onClick={() => document.getElementById('creative-journey').scrollIntoView({ behavior: 'smooth' })}
             title="Your Creative Journey"
           ></button>
+          <button 
+            className={`nav-dot ${activeSection === 'quick-start' ? 'active' : ''}`}
+            onClick={() => document.getElementById('quick-start').scrollIntoView({ behavior: 'smooth' })}
+            title="Quick Start"
+          ></button>
         </div>
         
 
-
-        <section id="quick-start" className="quick-actions-section">
-          <h2 className="section-title">Quick Start</h2>
-          <div className="quick-actions-grid">
-            {quickActions.map((action, index) => (
-              <div 
-                key={index} 
-                className="quick-action-card card"
-                onClick={() => navigate(action.path)}
-              >
-                <div className="action-icon">{action.icon}</div>
-                <h3 className="action-title">{action.title}</h3>
-                <p className="action-description">{action.description}</p>
-                <div className="action-arrow">→</div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <section id="creative-journey" className="about-section">
           <div className="about-card card">
@@ -174,6 +189,23 @@ const HomePage = () => {
                 <span className="stat-label">Creative</span>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="quick-start" className="quick-actions-section">
+          <div className="quick-actions-grid">
+            {quickActions.map((action, index) => (
+              <div 
+                key={index} 
+                className="quick-action-card card"
+                onClick={() => navigate(action.path)}
+              >
+                <div className="action-icon">{action.icon}</div>
+                <h3 className="action-title">{action.title}</h3>
+                <p className="action-description">{action.description}</p>
+                <div className="action-arrow">→</div>
+              </div>
+            ))}
           </div>
         </section>
       </div>

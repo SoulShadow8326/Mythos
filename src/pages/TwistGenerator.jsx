@@ -241,7 +241,7 @@ const TwistGenerator = () => {
         onClose={() => setShowPopup(false)}
         title="Twist Saved!"
         message="Your plot twist has been added to your collection."
-        icon="SAVE"
+        icon=""
         buttonText="Continue"
       />
     </div>

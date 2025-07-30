@@ -7,7 +7,8 @@ const CustomPopup = ({
   title = "Success!", 
   message = "Operation completed successfully.", 
   icon = "✓",
-  buttonText = "OK"
+  buttonText = "OK",
+  onConfirm = null
 }) => {
   useEffect(() => {
     const handleEscape = (e) => {
@@ -48,7 +49,7 @@ const CustomPopup = ({
           {message}
         </p>
         
-        <button className="popup-button" onClick={onClose}>
+        <button className="popup-button" onClick={onConfirm || onClose}>
           {buttonText}
         </button>
       </div>

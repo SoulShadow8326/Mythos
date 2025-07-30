@@ -1,12 +1,14 @@
 .home-page {
   min-height: 100vh;
-  padding: 40px 0;
+  overflow-x: hidden;
 }
 
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 
 .hero-section {
@@ -14,8 +16,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
-  margin-bottom: 100px;
-  min-height: 60vh;
+  min-height: 100vh;
+  scroll-snap-align: start;
   opacity: 0;
   transform: translateY(50px);
   animation: slideInFromBottom 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -108,13 +110,21 @@
 
 
 .quick-actions-section {
-  margin-bottom: 100px;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
 }
 
 .quick-actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .quick-action-card {
@@ -190,7 +200,12 @@
 }
 
 .about-section {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .about-card {
@@ -332,7 +347,7 @@
 
 @media (max-width: 768px) {
   .home-page {
-    padding: 20px 0;
+    overflow-x: hidden;
   }
   
   .home-container {
@@ -340,7 +355,7 @@
   }
   
   .hero-section {
-    margin-bottom: 60px;
+    min-height: 100vh;
     gap: 40px;
   }
   
@@ -362,7 +377,7 @@
   }
   
   .quick-actions-section {
-    margin-bottom: 60px;
+    min-height: 100vh;
   }
   
   .quick-actions-grid {

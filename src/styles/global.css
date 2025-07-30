@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 
 :root {
   --dark-bg: #000000;
@@ -14,8 +14,13 @@
   --accent-success: #44ff44;
   --accent-warning: #ffaa00;
   
-  --font-primary: 'IM Fell English', serif;
+  --font-primary: 'Crimson Text', serif;
   --font-secondary: 'EB Garamond', serif;
+  
+  /* Alternative font options - uncomment to use */
+  --font-primary-alt: 'Playfair Display', serif;
+  --font-secondary-alt: 'Crimson Text', serif;
+  --font-modern: 'Source Sans Pro', sans-serif;
   
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-deep: 0 8px 24px rgba(0, 0, 0, 0.5);
