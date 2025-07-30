@@ -21,6 +21,7 @@
   font-size: 3rem;
   color: var(--deep-burgundy);
   margin: 0;
+  animation: titleGlow 3s ease-in-out infinite;
 }
 
 .generator-controls {
@@ -117,7 +118,13 @@
 .twist-card {
   width: 100%;
   max-width: 500px;
-  animation: fadeIn 0.8s ease-out;
+  animation: cardAppear 0.8s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.twist-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-deep);
 }
 
 .twist-header {
@@ -194,6 +201,7 @@
 .empty-twist {
   text-align: center;
   color: var(--twilight-indigo);
+  animation: float 4s ease-in-out infinite, fadeInUp 1s ease-out;
 }
 
 .empty-twist .empty-icon {
@@ -238,7 +246,15 @@
 .history-item {
   padding: 16px;
   transition: var(--transition-smooth);
+  animation: slideInFromRight 0.6s ease-out;
+  animation-fill-mode: both;
 }
+
+.history-item:nth-child(1) { animation-delay: 0.1s; }
+.history-item:nth-child(2) { animation-delay: 0.2s; }
+.history-item:nth-child(3) { animation-delay: 0.3s; }
+.history-item:nth-child(4) { animation-delay: 0.4s; }
+.history-item:nth-child(5) { animation-delay: 0.5s; }
 
 .history-item:hover {
   transform: translateY(-2px);
@@ -254,6 +270,7 @@
 
 .history-icon {
   font-size: 1.5rem;
+  animation: iconBounce 2s ease-in-out infinite;
 }
 
 .history-title {
@@ -360,6 +377,75 @@
   100% {
     transform: scale(0) rotate(360deg);
     opacity: 0;
+  }
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(139, 38, 53, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(139, 38, 53, 0.6), 0 0 30px rgba(139, 38, 53, 0.4);
+  }
+}
+
+@keyframes cardAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes iconBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
