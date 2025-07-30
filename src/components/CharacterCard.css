@@ -1,0 +1,268 @@
+.character-card {
+  width: 320px;
+  height: 480px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin: 20px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.character-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--border-radius-large);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  background: var(--parchment-beige);
+  border: 1px solid rgba(139, 38, 53, 0.1);
+  overflow: hidden;
+}
+
+.card-front::before,
+.card-back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--deep-burgundy), var(--aged-gold));
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, var(--soft-cream) 0%, var(--parchment-beige) 100%);
+}
+
+.character-card.hovered {
+  transform: translateY(-10px) scale(1.02);
+  transition: var(--transition-bounce);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.character-name {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  color: var(--deep-burgundy);
+  margin: 0 0 8px 0;
+  letter-spacing: 1px;
+}
+
+.character-role {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  color: var(--aged-gold);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.character-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--deep-burgundy) 0%, var(--aged-gold) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: 2rem;
+  color: var(--parchment-beige);
+  box-shadow: var(--shadow-soft);
+  border: 3px solid var(--aged-gold);
+}
+
+.character-stats {
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(139, 38, 53, 0.1);
+}
+
+.stat-label {
+  font-family: var(--font-secondary);
+  font-weight: 500;
+  color: var(--twilight-indigo);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-family: var(--font-secondary);
+  color: var(--deep-burgundy);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.character-description {
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.character-description p {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--faded-ink-black);
+  font-style: italic;
+}
+
+.card-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.back-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--aged-gold);
+  padding-bottom: 12px;
+}
+
+.back-header h4 {
+  font-family: var(--font-primary);
+  color: var(--deep-burgundy);
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.backstory,
+.personality,
+.relationships {
+  margin-bottom: 20px;
+}
+
+.backstory h5,
+.personality h5,
+.relationships h5 {
+  font-family: var(--font-primary);
+  color: var(--deep-burgundy);
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(139, 38, 53, 0.2);
+  padding-bottom: 4px;
+}
+
+.backstory p {
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--faded-ink-black);
+  font-style: italic;
+}
+
+.traits-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.trait-tag {
+  background: linear-gradient(135deg, var(--aged-gold) 0%, var(--muted-gold) 100%);
+  color: var(--faded-ink-black);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-secondary);
+}
+
+.relationships-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.relationship-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(139, 38, 53, 0.05);
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--aged-gold);
+}
+
+.rel-name {
+  font-family: var(--font-secondary);
+  font-weight: 500;
+  color: var(--deep-burgundy);
+  font-size: 0.85rem;
+}
+
+.rel-type {
+  font-family: var(--font-secondary);
+  color: var(--aged-gold);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.flip-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-secondary);
+  font-size: 0.75rem;
+  color: var(--aged-gold);
+  opacity: 0.7;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .character-card {
+    width: 280px;
+    height: 420px;
+    margin: 10px;
+  }
+  
+  .card-front,
+  .card-back {
+    padding: 16px;
+  }
+  
+  .character-name {
+    font-size: 1.3rem;
+  }
+  
+  .avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+} 

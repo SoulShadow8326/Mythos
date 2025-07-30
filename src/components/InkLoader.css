@@ -1,0 +1,154 @@
+.ink-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  position: relative;
+}
+
+.loader-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.quill-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.quill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--card-border) 0%, var(--accent-primary) 50%, var(--text-secondary) 100%);
+  border-radius: 4px;
+  animation: quillWriting 2s ease-in-out infinite;
+}
+
+.feather {
+  position: absolute;
+  top: -20px;
+  left: -8px;
+  width: 24px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--text-secondary) 0%, var(--accent-primary) 100%);
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-15deg);
+}
+
+.feather-tip {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 12px;
+  background: var(--accent-primary);
+  border-radius: 0 0 1px 1px;
+}
+
+.ink-spots {
+  position: relative;
+  width: 200px;
+  height: 100px;
+}
+
+.ink-spot {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-primary) 0%, rgba(99, 102, 241, 0.8) 70%, transparent 100%);
+  animation: inkSpread 1.5s ease-out infinite;
+}
+
+.ink-spot-1 {
+  width: 20px;
+  height: 20px;
+  top: 20px;
+  left: 30px;
+  animation-delay: 0s;
+}
+
+.ink-spot-2 {
+  width: 15px;
+  height: 15px;
+  top: 50px;
+  left: 80px;
+  animation-delay: 0.5s;
+}
+
+.ink-spot-3 {
+  width: 25px;
+  height: 25px;
+  top: 30px;
+  left: 140px;
+  animation-delay: 1s;
+}
+
+.loading-text {
+  display: flex;
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  color: var(--accent-primary);
+  letter-spacing: 1px;
+}
+
+.text-char {
+  opacity: 0;
+  animation: typewriterChar 0.1s ease-out forwards;
+}
+
+.page-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes quillWriting {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(5deg);
+  }
+}
+
+@keyframes typewriterChar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes inkSpread {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+} 

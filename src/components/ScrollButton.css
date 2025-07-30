@@ -1,0 +1,131 @@
+.scroll-button {
+  position: relative;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--border-radius);
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-family: var(--font-primary);
+  font-size: 16px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.scroll-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.05'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v-40c11.046 0 20 8.954 20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.scroll-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.scroll-text {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.scroll-ends {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.scroll-end {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 60%;
+  background: linear-gradient(135deg, var(--card-border) 0%, var(--accent-primary) 100%);
+  border-radius: 4px;
+}
+
+.scroll-end.left {
+  left: -4px;
+}
+
+.scroll-end.right {
+  right: -4px;
+}
+
+.scroll-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-deep);
+  border-color: var(--accent-primary);
+}
+
+.scroll-button:hover::before {
+  opacity: 0.5;
+}
+
+.scroll-button:active {
+  transform: translateY(0);
+}
+
+.scroll-button-primary {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: var(--dark-bg);
+  border-color: var(--accent-primary);
+}
+
+.scroll-button-primary:hover {
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+}
+
+.scroll-button-secondary {
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+  color: var(--text-primary);
+  border-color: var(--accent-secondary);
+}
+
+.scroll-button-secondary:hover {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+}
+
+.scroll-button-ghost {
+  background: transparent;
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.scroll-button-ghost:hover {
+  background: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.scroll-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.scroll-button.disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (max-width: 768px) {
+  .scroll-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 100px;
+  }
+} 
