@@ -129,7 +129,7 @@ const HomePage = () => {
             title="Your Creative Journey"
           ></button>
         </div>
-
+        
 
 
         <section id="quick-start" className="quick-actions-section">

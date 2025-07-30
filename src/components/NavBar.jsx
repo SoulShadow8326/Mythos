@@ -27,7 +27,7 @@ const NavBar = () => {
       <div className="navbar-container">
         <div className="navbar-brand">
           <Link to="/" style={{ textDecoration: 'none' }}>
-            <h1 className="brand-title">Mythos</h1>
+          <h1 className="brand-title">Mythos</h1>
           </Link>
         </div>
         

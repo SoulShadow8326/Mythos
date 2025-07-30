@@ -1,0 +1,129 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.popup-container {
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-deep);
+  position: relative;
+  animation: slideIn 0.4s ease-out;
+}
+
+.popup-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--aged-gold);
+}
+
+.popup-title {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  color: var(--deep-burgundy);
+  margin-bottom: 12px;
+}
+
+.popup-message {
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: var(--faded-ink-black);
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.popup-button {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: var(--dark-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 12px 24px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-soft);
+}
+
+.popup-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-deep);
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+}
+
+.popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--twilight-indigo);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: var(--transition-smooth);
+}
+
+.popup-close:hover {
+  opacity: 1;
+  color: var(--deep-burgundy);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .popup-container {
+    padding: 25px 20px;
+    margin: 20px;
+  }
+  
+  .popup-title {
+    font-size: 1.3rem;
+  }
+  
+  .popup-message {
+    font-size: 0.9rem;
+  }
+} 

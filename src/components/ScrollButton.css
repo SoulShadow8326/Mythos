@@ -54,7 +54,7 @@
   transform: translateY(-50%);
   width: 8px;
   height: 60%;
-  background: linear-gradient(135deg, var(--card-border) 0%, var(--accent-primary) 100%);
+  background: var(--card-border);
   border-radius: 4px;
 }
 
@@ -86,6 +86,10 @@
   border-color: var(--accent-primary);
 }
 
+.scroll-button-primary .scroll-end {
+  background: var(--dark-bg);
+}
+
 .scroll-button-primary:hover {
   background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
 }
@@ -96,6 +100,10 @@
   border-color: var(--accent-secondary);
 }
 
+.scroll-button-secondary .scroll-end {
+  background: var(--dark-bg);
+}
+
 .scroll-button-secondary:hover {
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
 }
@@ -104,6 +112,10 @@
   background: transparent;
   color: var(--accent-primary);
   border-color: var(--accent-primary);
+}
+
+.scroll-button-ghost .scroll-end {
+  background: var(--accent-primary);
 }
 
 .scroll-button-ghost:hover {

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
+import TwistPage from './pages/TwistGenerator';
 import PlotPage from './pages/PlotVisualizer';
 import CharacterPage from './pages/CharacterCreator';
 import StoryPage from './pages/StoryBuilder';
@@ -21,6 +22,7 @@ function App() {
             <Route path="/character" element={<CharacterPage />} />
             <Route path="/plot" element={<PlotPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/twist" element={<TwistPage />} />
           </Routes>
         </main>
       </div>

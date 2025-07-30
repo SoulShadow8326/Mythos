@@ -401,7 +401,7 @@
   top: 50%;
   transform: translateY(-50%);
   display: flex;
-  flex-direction: column;
+    flex-direction: column;
   gap: 15px;
   z-index: 1000;
 }
@@ -425,8 +425,8 @@
 .nav-dot.active {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
-}
-
+  }
+  
 .nav-dot::before {
   content: attr(title);
   position: absolute;
