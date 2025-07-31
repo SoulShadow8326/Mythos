@@ -11,7 +11,6 @@
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
 }
-
 .popup-container {
   background: var(--card-bg);
   border: 2px solid var(--card-border);
@@ -24,20 +23,17 @@
   position: relative;
   animation: slideIn 0.4s ease-out;
 }
-
 .popup-icon {
   font-size: 3rem;
   margin-bottom: 20px;
   color: var(--aged-gold);
 }
-
 .popup-title {
   font-family: var(--font-primary);
   font-size: 1.5rem;
   color: var(--deep-burgundy);
   margin-bottom: 12px;
 }
-
 .popup-message {
   font-family: var(--font-secondary);
   font-size: 1rem;
@@ -45,7 +41,6 @@
   line-height: 1.5;
   margin-bottom: 25px;
 }
-
 .popup-button {
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: var(--dark-bg);
@@ -59,13 +54,11 @@
   transition: var(--transition-smooth);
   box-shadow: var(--shadow-soft);
 }
-
 .popup-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-deep);
   background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
 }
-
 .popup-close {
   position: absolute;
   top: 15px;
@@ -78,12 +71,10 @@
   opacity: 0.7;
   transition: var(--transition-smooth);
 }
-
 .popup-close:hover {
   opacity: 1;
   color: var(--deep-burgundy);
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -92,7 +83,6 @@
     opacity: 1;
   }
 }
-
 @keyframes slideIn {
   from {
     transform: translateY(-50px) scale(0.9);
@@ -103,7 +93,6 @@
     opacity: 1;
   }
 }
-
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
@@ -112,7 +101,6 @@
     transform: scale(1.1);
   }
 }
-
 @media (max-width: 768px) {
   .popup-container {
     padding: 25px 20px;

@@ -13,7 +13,6 @@
   overflow: hidden;
   min-width: 120px;
 }
-
 .scroll-button::before {
   content: '';
   position: absolute;
@@ -25,7 +24,6 @@
   pointer-events: none;
   opacity: 0.3;
 }
-
 .scroll-content {
   position: relative;
   display: flex;
@@ -33,12 +31,10 @@
   justify-content: center;
   z-index: 1;
 }
-
 .scroll-text {
   font-weight: 500;
   letter-spacing: 0.5px;
 }
-
 .scroll-ends {
   position: absolute;
   top: 0;
@@ -47,7 +43,6 @@
   bottom: 0;
   pointer-events: none;
 }
-
 .scroll-end {
   position: absolute;
   top: 50%;
@@ -57,83 +52,66 @@
   background: var(--card-border);
   border-radius: 4px;
 }
-
 .scroll-end.left {
   left: -4px;
 }
-
 .scroll-end.right {
   right: -4px;
 }
-
 .scroll-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-deep);
   border-color: var(--accent-primary);
 }
-
 .scroll-button:hover::before {
   opacity: 0.5;
 }
-
 .scroll-button:active {
   transform: translateY(0);
 }
-
 .scroll-button-primary {
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: var(--dark-bg);
   border-color: var(--accent-primary);
 }
-
 .scroll-button-primary .scroll-end {
   background: var(--dark-bg);
 }
-
 .scroll-button-primary:hover {
   background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
 }
-
 .scroll-button-secondary {
   background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
   color: var(--dark-bg);
   border-color: var(--accent-secondary);
 }
-
 .scroll-button-secondary .scroll-end {
   background: var(--dark-bg);
 }
-
 .scroll-button-secondary:hover {
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
 }
-
 .scroll-button-ghost {
   background: transparent;
   color: var(--accent-primary);
   border-color: var(--accent-primary);
 }
-
 .scroll-button-ghost .scroll-end {
   background: var(--accent-primary);
 }
-
 .scroll-button-ghost:hover {
   background: var(--accent-primary);
   color: var(--dark-bg);
 }
-
 .scroll-button.disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
-
 .scroll-button.disabled:hover {
   transform: none;
   box-shadow: var(--shadow-soft);
 }
-
 @media (max-width: 768px) {
   .scroll-button {
     padding: 10px 20px;

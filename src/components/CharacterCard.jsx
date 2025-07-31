@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import './CharacterCard.css';
-
 const CharacterCard = ({ character, onEdit, onDelete }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
-
   return (
     <div 
       className={`character-card ${isFlipped ? 'flipped' : ''} ${isHovered ? 'hovered' : ''}`}
@@ -109,5 +106,4 @@ const CharacterCard = ({ character, onEdit, onDelete }) => {
     </div>
   );
 };
-
 export default CharacterCard; 

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import './CustomPopup.css';
-
 const CustomPopup = ({ 
   isOpen, 
   onClose, 
@@ -16,20 +15,16 @@ const CustomPopup = ({
         onClose();
       }
     };
-
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
     }
-
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
-
   if (!isOpen) return null;
-
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-container" onClick={(e) => e.stopPropagation()}>
@@ -56,5 +51,4 @@ const CustomPopup = ({
     </div>
   );
 };
-
 export default CustomPopup; 

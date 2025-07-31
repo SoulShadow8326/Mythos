@@ -1,6 +1,5 @@
 import React from 'react';
 import './InkLoader.css';
-
 const InkLoader = ({ message = "Crafting your tale..." }) => {
   return (
     <div className="ink-loader">
@@ -13,5 +12,4 @@ const InkLoader = ({ message = "Crafting your tale..." }) => {
     </div>
   );
 };
-
 export default InkLoader; 

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './CustomDropdown.css';
-
 const CustomDropdown = ({ 
   options, 
   value, 
@@ -11,33 +10,27 @@ const CustomDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const handleToggle = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
     }
   };
-
   const handleSelect = (option) => {
     onChange(option.value);
     setIsOpen(false);
   };
-
   const selectedOption = options.find(option => option.value === value);
-
   return (
     <div 
       ref={dropdownRef}
@@ -81,5 +74,4 @@ const CustomDropdown = ({
     </div>
   );
 };
-
 export default CustomDropdown; 

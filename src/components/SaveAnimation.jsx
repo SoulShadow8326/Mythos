@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './SaveAnimation.css';
-
 const SaveAnimation = ({ isVisible, onClose, storyTitle }) => {
   const [saveProgress, setSaveProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -11,7 +10,6 @@ const SaveAnimation = ({ isVisible, onClose, storyTitle }) => {
     { name: 'Saving to library...', duration: 1000 },
     { name: 'Story saved successfully!', duration: 500 }
   ];
-
   useEffect(() => {
     if (isVisible) {
       setSaveProgress(0);
@@ -31,9 +29,7 @@ const SaveAnimation = ({ isVisible, onClose, storyTitle }) => {
       }, totalTime + 1000);
     }
   }, [isVisible, onClose]);
-
   if (!isVisible) return null;
-
   return (
     <div className="save-animation-overlay">
       <div className="save-animation-container">
@@ -67,5 +63,4 @@ const SaveAnimation = ({ isVisible, onClose, storyTitle }) => {
     </div>
   );
 };
-
 export default SaveAnimation; 

@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import ScrollButton from '../components/ScrollButton';
 import CustomPopup from '../components/CustomPopup';
 import './TwistGenerator.css';
-
 const TwistGenerator = () => {
+  const { isAuthenticated } = useAuth();
   const [currentTwist, setCurrentTwist] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [twistHistory, setTwistHistory] = useState([]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadTwistHistory();
+    }
+  }, [isAuthenticated]);
   const plotTwists = [
     {
       title: "The Betrayal",
@@ -96,41 +102,58 @@ const TwistGenerator = () => {
       icon: "TWIST"
     }
   ];
-
+  const loadTwistHistory = async () => {
+    try {
+      const response = await api.getTwists();
+      setTwistHistory(response);
+    } catch (error) {
+      console.error('Error loading twist history:', error);
+    }
+  };
   const generateTwist = async () => {
     setIsGenerating(true);
     setShowAnimation(true);
     
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const randomTwist = plotTwists[Math.floor(Math.random() * plotTwists.length)];
-    const twistWithId = {
-      ...randomTwist,
-      id: Date.now(),
-      timestamp: new Date().toLocaleTimeString()
-    };
-    
-    setCurrentTwist(twistWithId);
-    setTwistHistory(prev => [twistWithId, ...prev.slice(0, 4)]);
-    setIsGenerating(false);
-    
-    setTimeout(() => setShowAnimation(false), 1000);
-  };
-
-  const saveTwist = () => {
-    if (currentTwist) {
-      const savedTwists = JSON.parse(localStorage.getItem('mythos_twists') || '[]');
-      savedTwists.push(currentTwist);
-      localStorage.setItem('mythos_twists', JSON.stringify(savedTwists));
-      setShowPopup(true);
+    try {
+      const response = await api.generateTwist({});
+      const twistWithId = {
+        ...response,
+        id: Date.now(),
+        timestamp: new Date().toLocaleTimeString()
+      };
+      
+      setCurrentTwist(twistWithId);
+      setTwistHistory(prev => [twistWithId, ...prev.slice(0, 4)]);
+      setIsGenerating(false);
+      
+      setTimeout(() => setShowAnimation(false), 1000);
+    } catch (error) {
+      console.error('Error generating twist:', error);
+      setIsGenerating(false);
+      setShowAnimation(false);
     }
   };
-
+  const saveTwist = async () => {
+    if (currentTwist) {
+      try {
+        await api.createTwist({
+          title: currentTwist.title,
+          description: currentTwist.description,
+          category: currentTwist.category,
+          impact: currentTwist.impact,
+          icon: currentTwist.icon
+        });
+        setShowPopup(true);
+        loadTwistHistory();
+      } catch (error) {
+        console.error('Error saving twist:', error);
+      }
+    }
+  };
   const clearHistory = () => {
     setTwistHistory([]);
     setCurrentTwist(null);
   };
-
   return (
     <div className="twist-generator">
       <div className="generator-container">
@@ -247,5 +270,4 @@ const TwistGenerator = () => {
     </div>
   );
 };
-
 export default TwistGenerator; 

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import ScrollButton from '../components/ScrollButton';
 import CustomDropdown from '../components/CustomDropdown';
 import CustomPopup from '../components/CustomPopup';
 import './StoryLibrary.css';
-
 const StoryLibrary = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [stories, setStories] = useState([]);
   const [selectedStory, setSelectedStory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,56 +16,114 @@ const StoryLibrary = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showExportPopup, setShowExportPopup] = useState(false);
   const [storyToDelete, setStoryToDelete] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    loadStories();
-  }, []);
-
-  const loadStories = () => {
-    const savedStories = JSON.parse(localStorage.getItem('mythos_stories') || '[]');
-    setStories(savedStories);
+    if (isAuthenticated) {
+      loadStories();
+    }
+  }, [isAuthenticated]);
+  const loadStories = async () => {
+    try {
+      setLoading(true);
+      const response = await api.getStories();
+      console.log('Raw stories response:', response);
+      
+      
+      const formattedStories = response.map(story => {
+        console.log('Processing story:', story);
+        
+        let safeContent = [];
+        if (story.content) {
+          if (Array.isArray(story.content)) {
+    
+            safeContent = story.content.map(message => {
+              if (message && typeof message === 'object') {
+                return {
+                  ...message,
+                  content: message.content || 'No content',
+                  type: message.type || 'user'
+                };
+              }
+              return message;
+            });
+          } else if (typeof story.content === 'string') {
+            try {
+              const parsed = JSON.parse(story.content);
+              if (Array.isArray(parsed)) {
+        
+                safeContent = parsed.map(message => {
+                  if (message && typeof message === 'object') {
+                    return {
+                      ...message,
+                      content: message.content || 'No content',
+                      type: message.type || 'user'
+                    };
+                  }
+                  return message;
+                });
+              } else {
+                safeContent = [];
+              }
+            } catch (e) {
+              safeContent = [];
+            }
+          }
+        }
+        
+        return {
+          ...story,
+          content: safeContent,
+  
+          title: story.title || 'Untitled Story',
+          genre: story.genre || 'Unknown',
+          createdAt: story.createdAt || story.created_at || new Date().toISOString()
+        };
+      });
+      
+      console.log('Formatted stories:', formattedStories);
+      setStories(formattedStories);
+    } catch (error) {
+      console.error('Error loading stories:', error);
+      setStories([]);
+    } finally {
+      setLoading(false);
+    }
   };
-
   const filteredStories = stories.filter(story => {
     const matchesSearch = story.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGenre = !filterGenre || story.genre === filterGenre;
     return matchesSearch && matchesGenre;
   });
-
   const deleteStory = (storyId) => {
     const story = stories.find(s => s.id === storyId);
     setStoryToDelete(story);
     setShowDeletePopup(true);
   };
-
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (storyToDelete) {
-      const updatedStories = stories.filter(story => story.id !== storyToDelete.id);
-      setStories(updatedStories);
-      localStorage.setItem('mythos_stories', JSON.stringify(updatedStories));
-      
-      if (selectedStory && selectedStory.id === storyToDelete.id) {
-        setSelectedStory(null);
+      try {
+        await api.deleteStory(storyToDelete.id);
+        const updatedStories = stories.filter(story => story.id !== storyToDelete.id);
+        setStories(updatedStories);
+        
+        if (selectedStory && selectedStory.id === storyToDelete.id) {
+          setSelectedStory(null);
+        }
+        setStoryToDelete(null);
+        setShowDeletePopup(false);
+      } catch (error) {
+        console.error('Error deleting story:', error);
       }
-      setStoryToDelete(null);
-      setShowDeletePopup(false);
     }
   };
-
-  const exportStory = (story) => {
-    const storyText = formatStoryForExport(story);
-    const blob = new Blob([storyText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${story.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setShowExportPopup(true);
+  const exportStory = async (story) => {
+    try {
+      await api.exportStory(story.id);
+      setShowExportPopup(true);
+    } catch (error) {
+      console.error('Error exporting story:', error);
+    }
   };
-
   const formatStoryForExport = (story) => {
     let exportText = `MYTHOS STORY EXPORT\n`;
     exportText += `Title: ${story.title}\n`;
@@ -71,15 +131,14 @@ const StoryLibrary = () => {
     exportText += `Created: ${new Date(story.createdAt).toLocaleDateString()}\n`;
     exportText += `\n${'='.repeat(50)}\n\n`;
     
-    if (story.content && story.content.length > 0) {
+    if (story.content && Array.isArray(story.content) && story.content.length > 0) {
       story.content.forEach((message, index) => {
-        exportText += `${message.type === 'user' ? 'You' : 'Mythos AI'}: ${message.content}\n\n`;
+        exportText += `${message.type === 'user' ? 'You' : 'Mythos AI'}: ${message.content || 'No content'}\n\n`;
       });
     }
     
     return exportText;
   };
-
   const getGenreColor = (genre) => {
     const colors = {
       fantasy: '#8b2635',
@@ -91,15 +150,62 @@ const StoryLibrary = () => {
     };
     return colors[genre] || '#95a5a6';
   };
-
   const getStoryPreview = (story) => {
-    if (story.content && story.content.length > 0) {
-      const lastMessage = story.content[story.content.length - 1];
-      return lastMessage.content.substring(0, 100) + (lastMessage.content.length > 100 ? '...' : '');
+    try {
+      console.log('getStoryPreview called with:', story);
+      
+      if (!story || !story.content) {
+        return 'No content available';
+      }
+      
+      console.log('Story content type:', typeof story.content, 'Content:', story.content);
+      
+      if (Array.isArray(story.content) && story.content.length > 0) {
+        const firstMessage = story.content[0];
+        console.log('First message:', firstMessage);
+        
+        if (firstMessage && firstMessage.content) {
+  
+          let content = firstMessage.content;
+          if (content === null || content === undefined) {
+            return 'No content available';
+          }
+          content = String(content);
+          console.log('Content to substring:', content, 'Type:', typeof content);
+          
+  
+          if (typeof content === 'string' && content.substring) {
+            return content.substring(0, 100) + (content.length > 100 ? '...' : '');
+          } else {
+            return 'Invalid content format';
+          }
+        }
+      }
+      
+      
+      if (typeof story.content === 'string') {
+        const content = String(story.content || '');
+        console.log('String content to substring:', content, 'Type:', typeof content);
+        if (typeof content === 'string' && content.substring) {
+          return content.substring(0, 100) + (content.length > 100 ? '...' : '');
+        } else {
+          return 'Invalid content format';
+        }
+      }
+      
+      
+      const content = String(story.content || '');
+      console.log('Final fallback content to substring:', content, 'Type:', typeof content);
+      if (typeof content === 'string' && content.substring) {
+        return content.substring(0, 100) + (content.length > 100 ? '...' : '');
+      } else {
+        return 'Invalid content format';
+      }
+    } catch (error) {
+      console.error('Error in getStoryPreview:', error, story);
+      return 'Error loading preview';
     }
-    return 'No content available';
   };
-
   return (
     <div className="story-library">
       <div className="library-container">
@@ -140,11 +246,12 @@ const StoryLibrary = () => {
         <div className="library-content">
           {filteredStories.length > 0 ? (
             <div className="stories-grid">
-              {filteredStories.map(story => (
+              {filteredStories.map((story, index) => (
                 <div 
                   key={story.id} 
                   className={`story-card card ${selectedStory?.id === story.id ? 'selected' : ''}`}
                   onClick={() => setSelectedStory(selectedStory?.id === story.id ? null : story)}
+                  style={{ '--story-index': index }}
                 >
                   <div className="story-card-header">
                     <h3 className="story-title">{story.title}</h3>
@@ -159,7 +266,16 @@ const StoryLibrary = () => {
                   </div>
                   
                   <div className="story-preview">
-                    <p>{getStoryPreview(story)}</p>
+                    <p>
+                      {(() => {
+                        try {
+                          return getStoryPreview(story);
+                        } catch (error) {
+                          console.error('Error calling getStoryPreview:', error, story);
+                          return 'Error loading preview';
+                        }
+                      })()}
+                    </p>
                   </div>
                   
                   <div className="story-meta">
@@ -167,7 +283,7 @@ const StoryLibrary = () => {
                       {new Date(story.createdAt).toLocaleDateString()}
                     </span>
                     <span className="story-messages">
-                      {story.content?.length || 0} messages
+                      {Array.isArray(story.content) ? story.content.length : 0} messages
                     </span>
                   </div>
                   
@@ -242,24 +358,24 @@ const StoryLibrary = () => {
                   </div>
                   <div className="info-item">
                     <span className="info-label">Messages:</span>
-                    <span className="info-value">{selectedStory.content?.length || 0}</span>
+                    <span className="info-value">{Array.isArray(selectedStory.content) ? selectedStory.content.length : 0}</span>
                   </div>
                 </div>
                 
                 <div className="story-conversation">
                   <h3>Story Content</h3>
                   <div className="conversation-container">
-                    {selectedStory.content && selectedStory.content.length > 0 ? (
+                    {selectedStory.content && Array.isArray(selectedStory.content) && selectedStory.content.length > 0 ? (
                       selectedStory.content.map((message, index) => (
-                        <div key={index} className={`conversation-message ${message.type}`}>
+                        <div key={index} className={`conversation-message ${message.type || 'user'}`}>
                           <div className="message-header">
                             <span className="message-author">
                               {message.type === 'user' ? 'You' : 'Mythos AI'}
                             </span>
-                            <span className="message-time">{message.timestamp}</span>
+                            <span className="message-time">{message.timestamp || 'Unknown time'}</span>
                           </div>
                           <div className="message-content">
-                            <p>{message.content}</p>
+                            <p>{message.content || 'No content'}</p>
                           </div>
                         </div>
                       ))
@@ -272,7 +388,7 @@ const StoryLibrary = () => {
                 <div className="details-actions">
                   <ScrollButton 
                     variant="secondary"
-                    icon="📄"
+                    icon="Story"
                     onClick={() => exportStory(selectedStory)}
                   >
                     Export Story
@@ -315,5 +431,4 @@ const StoryLibrary = () => {
     </div>
   );
 };
-
 export default StoryLibrary; 

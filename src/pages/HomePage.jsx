@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import ScrollButton from '../components/ScrollButton';
 import './HomePage.css';
-
 const HomePage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [animatedText, setAnimatedText] = useState('');
   const [showContent, setShowContent] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
@@ -25,10 +27,8 @@ const HomePage = () => {
     
     return () => clearInterval(timer);
   }, [fullText]);
-
   useEffect(() => {
     let scrollThreshold = 0;
-
     const handleScroll = () => {
       const heroSection = document.getElementById('hero');
       const quickStartSection = document.getElementById('quick-start');
@@ -50,33 +50,29 @@ const HomePage = () => {
         setActiveSection('quick-start');
       }
     };
-
     const handleWheel = (e) => {
       e.preventDefault();
       
-      // Reduce scroll sensitivity by 75% - require more scroll movement
+      
       scrollThreshold += Math.abs(e.deltaY) * 0.25;
       
-      if (scrollThreshold < 100) return; // Need more scroll to trigger
+              if (scrollThreshold < 100) return;
       
-      scrollThreshold = 0; // Reset threshold
+              scrollThreshold = 0;
       
       const sections = ['hero', 'creative-journey', 'quick-start'];
       const currentIndex = sections.indexOf(activeSection);
       
       if (e.deltaY > 0 && currentIndex < sections.length - 1) {
-        // Scroll down
         const nextSection = document.getElementById(sections[currentIndex + 1]);
         nextSection?.scrollIntoView({ behavior: 'smooth' });
         setActiveSection(sections[currentIndex + 1]);
       } else if (e.deltaY < 0 && currentIndex > 0) {
-        // Scroll up
         const prevSection = document.getElementById(sections[currentIndex - 1]);
         prevSection?.scrollIntoView({ behavior: 'smooth' });
         setActiveSection(sections[currentIndex - 1]);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('wheel', handleWheel, { passive: false });
     
@@ -85,9 +81,6 @@ const HomePage = () => {
       window.removeEventListener('wheel', handleWheel);
     };
   }, [activeSection]);
-
-
-
   const quickActions = [
     {
       title: "Start Writing",
@@ -108,7 +101,6 @@ const HomePage = () => {
       icon: "LIB"
     }
   ];
-
   return (
     <div className="home-page">
       <div className="home-container">
@@ -144,7 +136,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-
         <div className="section-navigation">
           <button 
             className={`nav-dot ${activeSection === 'hero' ? 'active' : ''}`}
@@ -163,8 +154,6 @@ const HomePage = () => {
           ></button>
         </div>
         
-
-
         <section id="creative-journey" className="about-section">
           <div className="about-card card">
             <h2>Your Creative Journey</h2>
@@ -191,7 +180,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-
         <section id="quick-start" className="quick-actions-section">
           <div className="quick-actions-grid">
             {quickActions.map((action, index) => (
@@ -212,5 +200,4 @@ const HomePage = () => {
     </div>
   );
 };
-
 export default HomePage; 

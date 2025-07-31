@@ -1,65 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import ScrollButton from '../components/ScrollButton';
 import CustomDropdown from '../components/CustomDropdown';
 import './PlotVisualizer.css';
-
 const PlotVisualizer = () => {
+  const { isAuthenticated } = useAuth();
   const [plotStructure, setPlotStructure] = useState('linear');
+  const [plots, setPlots] = useState([]);
+  const [currentPlot, setCurrentPlot] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showSaveForm, setShowSaveForm] = useState(false);
+  const [plotTitle, setPlotTitle] = useState('');
   
   const structureOptions = [
     { value: 'linear', label: 'Linear Structure' },
     { value: 'branching', label: 'Branching Plot' }
   ];
-  
-  const [currentPlot, setCurrentPlot] = useState({
-    acts: [
-      {
-        id: 1,
-        title: 'Act I: The Beginning',
-        description: 'Introduction of characters and setting',
-        events: ['Character introduction', 'World building', 'Inciting incident'],
-        completed: false
-      },
-      {
-        id: 2,
-        title: 'Act II: The Journey',
-        description: 'Rising action and character development',
-        events: ['First challenge', 'Character growth', 'Midpoint twist'],
-        completed: false
-      },
-      {
-        id: 3,
-        title: 'Act III: The Climax',
-        description: 'Peak of conflict and resolution',
-        events: ['Final confrontation', 'Climax', 'Resolution'],
-        completed: false
-      }
-    ],
-    branches: [
-      {
-        id: 1,
-        title: 'Path of Light',
-        description: 'Hero chooses the righteous path',
-        events: ['Moral decision', 'Sacrifice', 'Redemption'],
-        active: false
-      },
-      {
-        id: 2,
-        title: 'Path of Shadow',
-        description: 'Hero embraces darker powers',
-        events: ['Temptation', 'Corruption', 'Dark victory'],
-        active: false
-      },
-      {
-        id: 3,
-        title: 'Path of Balance',
-        description: 'Hero finds middle ground',
-        events: ['Compromise', 'Understanding', 'Harmony'],
-        active: false
-      }
-    ]
-  });
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadPlots();
+    }
+  }, [isAuthenticated]);
+  const loadPlots = async () => {
+    try {
+      setLoading(true);
+      const response = await api.getPlots();
+      setPlots(response);
+    } catch (error) {
+      console.error('Error loading plots:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const initializePlot = () => {
+    const newPlot = {
+      acts: [
+        {
+          id: 1,
+          title: 'Act I: The Beginning',
+          description: 'Introduction of characters and setting',
+          events: ['Character introduction', 'World building', 'Inciting incident'],
+          completed: false
+        },
+        {
+          id: 2,
+          title: 'Act II: The Journey',
+          description: 'Rising action and character development',
+          events: ['First challenge', 'Character growth', 'Midpoint twist'],
+          completed: false
+        },
+        {
+          id: 3,
+          title: 'Act III: The Climax',
+          description: 'Peak of conflict and resolution',
+          events: ['Final confrontation', 'Climax', 'Resolution'],
+          completed: false
+        }
+      ],
+      branches: [
+        {
+          id: 1,
+          title: 'Path of Light',
+          description: 'Hero chooses the righteous path',
+          events: ['Moral decision', 'Sacrifice', 'Redemption'],
+          active: false
+        },
+        {
+          id: 2,
+          title: 'Path of Shadow',
+          description: 'Hero embraces darker powers',
+          events: ['Temptation', 'Corruption', 'Dark victory'],
+          active: false
+        },
+        {
+          id: 3,
+          title: 'Path of Balance',
+          description: 'Hero finds middle ground',
+          events: ['Compromise', 'Understanding', 'Harmony'],
+          active: false
+        }
+      ]
+    };
+    setCurrentPlot(newPlot);
+  };
   const toggleAct = (actId) => {
     setCurrentPlot(prev => ({
       ...prev,
@@ -68,7 +92,6 @@ const PlotVisualizer = () => {
       )
     }));
   };
-
   const toggleBranch = (branchId) => {
     setCurrentPlot(prev => ({
       ...prev,
@@ -77,7 +100,6 @@ const PlotVisualizer = () => {
       )
     }));
   };
-
   const addEvent = (actId) => {
     const newEvent = prompt('Enter new event:');
     if (newEvent) {
@@ -91,8 +113,76 @@ const PlotVisualizer = () => {
       }));
     }
   };
-
-  const generatePlot = () => {
+  const generatePlot = async () => {
+    try {
+      
+      const aiResponse = await api.getStorySuggestions({
+        genre: 'fantasy',
+        theme: 'adventure'
+      });
+      
+      if (aiResponse && aiResponse.length > 0) {
+        const randomSuggestion = aiResponse[Math.floor(Math.random() * aiResponse.length)];
+        
+        const newPlot = {
+          acts: [
+            {
+              id: 1,
+              title: 'Act I: The Beginning',
+              description: randomSuggestion.synopsis || 'Introduction of characters and setting',
+              events: ['Character introduction', 'World building', 'Inciting incident'],
+              completed: false
+            },
+            {
+              id: 2,
+              title: 'Act II: The Journey',
+              description: 'Rising action and character development',
+              events: ['First challenge', 'Character growth', 'Midpoint twist'],
+              completed: false
+            },
+            {
+              id: 3,
+              title: 'Act III: The Climax',
+              description: 'Peak of conflict and resolution',
+              events: ['Final confrontation', 'Climax', 'Resolution'],
+              completed: false
+            }
+          ],
+          branches: [
+            {
+              id: 1,
+              title: 'Path of Light',
+              description: 'Hero chooses the righteous path',
+              events: ['Moral decision', 'Sacrifice', 'Redemption'],
+              active: false
+            },
+            {
+              id: 2,
+              title: 'Path of Shadow',
+              description: 'Hero embraces darker powers',
+              events: ['Temptation', 'Corruption', 'Dark victory'],
+              active: false
+            },
+            {
+              id: 3,
+              title: 'Path of Balance',
+              description: 'Hero finds middle ground',
+              events: ['Compromise', 'Understanding', 'Harmony'],
+              active: false
+            }
+          ]
+        };
+        setCurrentPlot(newPlot);
+      } else {
+        generateLocalPlot();
+      }
+    } catch (error) {
+      console.error('Error generating AI plot:', error);
+      
+      generateLocalPlot();
+    }
+  };
+  const generateLocalPlot = () => {
     const plotTemplates = [
       {
         title: 'Hero\'s Journey',
@@ -147,14 +237,63 @@ const PlotVisualizer = () => {
         ]
       }
     ];
-
     const randomTemplate = plotTemplates[Math.floor(Math.random() * plotTemplates.length)];
     setCurrentPlot(prev => ({
       ...prev,
       acts: randomTemplate.acts
     }));
   };
-
+  const savePlot = async () => {
+    if (!plotTitle.trim()) {
+      alert('Please enter a plot title');
+      return;
+    }
+    try {
+      const plotData = {
+        title: plotTitle,
+        structure_type: plotStructure,
+        acts: currentPlot.acts,
+        branches: currentPlot.branches
+      };
+      await api.createPlot(plotData);
+      setShowSaveForm(false);
+      setPlotTitle('');
+      setCurrentPlot(null);
+      loadPlots();
+    } catch (error) {
+      console.error('Error saving plot:', error);
+    }
+  };
+  const loadPlot = async (plotId) => {
+    try {
+      const plot = await api.getPlot(plotId);
+      setCurrentPlot({
+        acts: plot.acts,
+        branches: plot.branches
+      });
+      setPlotStructure(plot.structure_type);
+    } catch (error) {
+      console.error('Error loading plot:', error);
+    }
+  };
+  const deletePlot = async (plotId) => {
+    try {
+      await api.deletePlot(plotId);
+      loadPlots();
+    } catch (error) {
+      console.error('Error deleting plot:', error);
+    }
+  };
+  if (loading) {
+    return (
+      <div className="plot-visualizer">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading plots...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="plot-visualizer">
       <div className="visualizer-container">
@@ -172,110 +311,187 @@ const PlotVisualizer = () => {
               variant="secondary"
               icon="🎲"
               onClick={generatePlot}
+              disabled={!currentPlot}
             >
               Generate Plot
+            </ScrollButton>
+            <ScrollButton 
+              variant="primary"
+              icon="NEW"
+              onClick={initializePlot}
+            >
+              New Plot
+            </ScrollButton>
+            <ScrollButton 
+              variant="secondary"
+              icon="SAVE"
+              onClick={() => setShowSaveForm(true)}
+              disabled={!currentPlot}
+            >
+              Save Plot
             </ScrollButton>
           </div>
         </div>
         
         <div className="plot-content">
-          {plotStructure === 'linear' ? (
-            <div className="linear-plot">
-              <div className="plot-timeline">
-                {currentPlot.acts.map((act, index) => (
-                  <div key={act.id} className="act-container">
-                    <div className={`act-node ${act.completed ? 'completed' : ''}`}>
-                      <div className="act-number">{act.id}</div>
-                    </div>
-                    <div 
-                      className="act-content card"
-                      onClick={() => toggleAct(act.id)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div className="act-header">
-                        <h3>{act.title}</h3>
-                        <button 
-                          className={`toggle-btn ${act.completed ? 'completed' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleAct(act.id);
-                          }}
-                        >
-                        </button>
-                      </div>
-                      <p className="act-description">{act.description}</p>
-                      <div className="act-events">
-                        <h4>Key Events:</h4>
-                        <ul>
-                          {act.events.map((event, eventIndex) => (
-                            <li key={eventIndex}>{event}</li>
-                          ))}
-                        </ul>
-                        <button 
-                          className="add-event-btn"
-                          onClick={() => addEvent(act.id)}
-                        >
-                          + Add Event
-                        </button>
-                      </div>
-                    </div>
-                    {index < currentPlot.acts.length - 1 && (
-                      <div className="timeline-connector"></div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="branching-plot">
-              <div className="plot-center">
-                <div className="center-node">
-                  <h3>Story Start</h3>
-                </div>
-              </div>
-              <div className="plot-branches">
-                {currentPlot.branches.map((branch, index) => (
-                  <div key={branch.id} className="branch-container">
-                    <div className={`branch-path ${branch.active ? 'active' : ''}`}>
-                      <div className="branch-node">
-                        <div className="branch-number">{branch.id}</div>
+          {currentPlot ? (
+            plotStructure === 'linear' ? (
+              <div className="linear-plot">
+                <div className="plot-timeline">
+                  {currentPlot.acts.map((act, index) => (
+                    <div key={act.id} className="act-container">
+                      <div 
+                        className={`act-node ${act.completed ? 'completed' : ''}`}
+                        style={{ '--act-index': index }}
+                      >
+                        <div className="act-number">{act.id}</div>
                       </div>
                       <div 
-                        className="branch-content card"
-                        onClick={() => toggleBranch(branch.id)}
-                        style={{ cursor: 'pointer' }}
+                        className="act-content card"
+                        onClick={() => toggleAct(act.id)}
+                        style={{ cursor: 'pointer', '--act-index': index }}
                       >
-                        <div className="branch-header">
-                          <h3>{branch.title}</h3>
+                        <div className="act-header">
+                          <h3>{act.title}</h3>
                           <button 
-                            className={`toggle-btn ${branch.active ? 'completed' : ''}`}
+                            className={`toggle-btn ${act.completed ? 'completed' : ''}`}
                             onClick={(e) => {
                               e.stopPropagation();
-                              toggleBranch(branch.id);
+                              toggleAct(act.id);
                             }}
                           >
                           </button>
                         </div>
-                        <p className="branch-description">{branch.description}</p>
-                        <div className="branch-events">
-                          <h4>Story Events:</h4>
+                        <p className="act-description">{act.description}</p>
+                        <div className="act-events">
+                          <h4>Key Events:</h4>
                           <ul>
-                            {branch.events.map((event, eventIndex) => (
+                            {act.events.map((event, eventIndex) => (
                               <li key={eventIndex}>{event}</li>
                             ))}
                           </ul>
+                          <button 
+                            className="add-event-btn"
+                            onClick={() => addEvent(act.id)}
+                          >
+                            + Add Event
+                          </button>
+                        </div>
+                      </div>
+                      {index < currentPlot.acts.length - 1 && (
+                        <div className="timeline-connector"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="branching-plot">
+                <div className="plot-center">
+                  <div className="center-node">
+                    <h3>Story Start</h3>
+                  </div>
+                </div>
+                <div className="plot-branches">
+                  {currentPlot.branches.map((branch, index) => (
+                    <div key={branch.id} className="branch-container">
+                      <div className={`branch-path ${branch.active ? 'active' : ''}`}>
+                        <div 
+                          className="branch-node"
+                          style={{ '--branch-index': index }}
+                        >
+                          <div className="branch-number">{branch.id}</div>
+                        </div>
+                        <div 
+                          className="branch-content card"
+                          onClick={() => toggleBranch(branch.id)}
+                          style={{ cursor: 'pointer', '--branch-index': index }}
+                        >
+                          <div className="branch-header">
+                            <h3>{branch.title}</h3>
+                            <button 
+                              className={`toggle-btn ${branch.active ? 'completed' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleBranch(branch.id);
+                              }}
+                            >
+                            </button>
+                          </div>
+                          <p className="branch-description">{branch.description}</p>
+                          <div className="branch-events">
+                            <h4>Story Events:</h4>
+                            <ul>
+                              {branch.events.map((event, eventIndex) => (
+                                <li key={eventIndex}>{event}</li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+            )
+          ) : (
+            <div className="empty-plot">
+              <div className="empty-icon">PLOT</div>
+              <h3>No Active Plot</h3>
+              <p>Create a new plot or load an existing one to get started!</p>
             </div>
           )}
         </div>
+        {showSaveForm && (
+          <div className="save-overlay">
+            <div className="save-modal card">
+              <h3>Save Plot</h3>
+              <input
+                type="text"
+                className="input"
+                placeholder="Enter plot title..."
+                value={plotTitle}
+                onChange={(e) => setPlotTitle(e.target.value)}
+              />
+              <div className="save-actions">
+                <ScrollButton 
+                  variant="secondary"
+                  icon="SAVE"
+                  onClick={savePlot}
+                  disabled={!plotTitle.trim()}
+                >
+                  Save
+                </ScrollButton>
+                <ScrollButton 
+                  variant="ghost"
+                  icon="CANCEL"
+                  onClick={() => setShowSaveForm(false)}
+                >
+                  Cancel
+                </ScrollButton>
+              </div>
+            </div>
+          </div>
+        )}
+        {plots.length > 0 && (
+          <div className="saved-plots">
+            <h3>Saved Plots</h3>
+            <div className="plots-grid">
+              {plots.map(plot => (
+                <div key={plot.id} className="plot-card card">
+                  <h4>{plot.title}</h4>
+                  <p>Structure: {plot.structure_type}</p>
+                  <div className="plot-actions">
+                    <button onClick={() => loadPlot(plot.id)}>Load</button>
+                    <button onClick={() => deletePlot(plot.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
 export default PlotVisualizer; 

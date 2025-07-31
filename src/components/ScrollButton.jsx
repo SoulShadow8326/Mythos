@@ -1,6 +1,5 @@
 import React from 'react';
 import './ScrollButton.css';
-
 const ScrollButton = ({ children, onClick, variant = 'primary', disabled = false }) => {
   return (
     <button 
@@ -18,5 +17,4 @@ const ScrollButton = ({ children, onClick, variant = 'primary', disabled = false
     </button>
   );
 };
-
 export default ScrollButton; 

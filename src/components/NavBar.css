@@ -7,7 +7,6 @@
   border-bottom: 1px solid var(--card-border);
   width: 100%;
 }
-
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -18,12 +17,10 @@
   min-height: 70px;
   width: 100%;
 }
-
 .navbar-brand {
   display: flex;
   align-items: center;
 }
-
 .brand-title {
   font-family: var(--font-primary);
   font-size: 2rem;
@@ -32,12 +29,10 @@
   letter-spacing: 1px;
   font-weight: 600;
 }
-
 .navbar-menu {
   display: flex;
   gap: 8px;
 }
-
 .nav-button {
   background: transparent;
   border: 1px solid var(--card-border);
@@ -54,39 +49,54 @@
   display: inline-block;
   text-decoration: none;
 }
-
 .nav-button:hover {
   background: var(--accent-primary);
   color: var(--dark-bg);
   border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
-
 .nav-button.active {
   background: var(--accent-primary);
   color: var(--dark-bg);
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-soft);
 }
-
 .auth-button {
   background: var(--text-primary) !important;
   color: var(--dark-bg) !important;
   border-color: var(--text-primary) !important;
 }
-
 .auth-button:hover {
   background: var(--accent-secondary) !important;
   color: var(--dark-bg) !important;
   border-color: var(--accent-secondary) !important;
 }
-
 .auth-button.active {
   background: var(--accent-secondary) !important;
   color: var(--dark-bg) !important;
   border-color: var(--accent-secondary) !important;
 }
-
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.username {
+  color: var(--aged-gold);
+  font-weight: 500;
+  font-size: 0.9rem;
+  border: 2px solid #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+.username:hover {
+  background: rgba(139, 38, 53, 0.2);
+  border-color: #8b2635;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 38, 53, 0.3);
+}
 .nav-hover-effect {
   position: absolute;
   top: 0;
@@ -97,13 +107,11 @@
   animation: inkSpread 0.3s ease-out;
   pointer-events: none;
 }
-
 @media (min-width: 1200px) {
   .navbar-container {
     max-width: 1400px;
   }
 }
-
 @media (max-width: 768px) {
   .navbar-container {
     flex-direction: column;
