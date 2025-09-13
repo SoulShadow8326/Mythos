@@ -79,10 +79,8 @@ class FallbackService {
     ];
   }
   generatePlotTwist(storyContext = '', genre = '') {
-    // Select a random twist, but try to match genre if provided
     let selectedTwist = this.plotTwists[Math.floor(Math.random() * this.plotTwists.length)];
     
-    // Simple genre matching
     if (genre) {
       const genreLower = genre.toLowerCase();
       if (genreLower.includes('mystery') || genreLower.includes('thriller')) {

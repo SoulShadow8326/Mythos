@@ -21,7 +21,7 @@ async function retryWithBackoff(operation, maxRetries = 3, baseDelay = 1000, use
       
       if (useFallback && attempt === maxRetries) {
         console.log('All retries exhausted, using fallback service...');
-        return null; // Signal to use fallback
+        return null;
       }
       
       throw error;
@@ -92,7 +92,6 @@ class GeminiService {
   }
   async continueStory(storyContent, direction = '', existingCharacters = [], existingPlots = [], existingTwists = []) {
     const result = await retryWithBackoff(async () => {
-      // Build context from existing content
       let contextPrompt = '';
       
       if (existingCharacters && existingCharacters.length > 0) {

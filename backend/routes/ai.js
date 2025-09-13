@@ -65,7 +65,6 @@ router.post('/continue-story', async (req, res) => {
   } catch (error) {
     console.error('Error continuing story:', error);
     
-    // Check if it's a service overload error
     if (error.message && error.message.includes('503 Service Unavailable')) {
       res.status(503).json({ 
         error: 'AI service is currently overloaded. Please try again in a few moments.',
@@ -110,7 +109,6 @@ router.post('/develop-character', async (req, res) => {
   } catch (error) {
     console.error('Error developing character:', error);
     
-    // Check if it's a service overload error
     if (error.message && error.message.includes('503 Service Unavailable')) {
       res.status(503).json({ 
         error: 'AI service is currently overloaded. Please try again in a few moments.',
@@ -265,7 +263,6 @@ router.post('/writing-prompts', async (req, res) => {
   } catch (error) {
     console.error('Error generating writing prompts:', error);
     
-    // Check if it's a service overload error
     if (error.message && error.message.includes('503 Service Unavailable')) {
       res.status(503).json({ 
         error: 'AI service is currently overloaded. Please try again in a few moments.',

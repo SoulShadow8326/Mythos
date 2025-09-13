@@ -17,7 +17,6 @@ router.get('/', authenticateToken, async (req, res) => {
       ORDER BY s.updated_at DESC
     `, [req.user.id]);
     
-    // Parse content field from JSON string to array
     const parsedStories = stories.map(story => {
       let parsedContent = [];
       if (story.content) {
@@ -77,7 +76,6 @@ router.get('/:id', async (req, res) => {
     const characters = await getAll('SELECT * FROM characters WHERE story_id = ?', [id]);
     const twists = await getAll('SELECT * FROM twists WHERE story_id = ?', [id]);
     
-    // Parse content field from JSON string to array
     let parsedContent = [];
     if (story.content) {
       try {
@@ -134,7 +132,6 @@ router.post('/', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Title is required' });
     }
     
-    // Create the story
     const result = await runQuery(`
       INSERT INTO stories (user_id, title, genre, content)
       VALUES (?, ?, ?, ?)
@@ -142,12 +139,10 @@ router.post('/', authenticateToken, async (req, res) => {
     
     const storyId = result.id;
     
-    // If auto-generate is enabled and there's content, generate characters and plots
     if (autoGenerate && content) {
       try {
         const geminiService = require('../services/geminiService');
         
-        // Generate a character
         const characterData = await geminiService.generateCharacterFromStory(content);
         await runQuery(`
           INSERT INTO characters (user_id, story_id, name, role, age, origin, motivation, description, backstory, traits, relationships)
@@ -166,7 +161,6 @@ router.post('/', authenticateToken, async (req, res) => {
           characterData.relationships
         ]);
         
-        // Generate a plot
         const plotData = await geminiService.generatePlotFromStory(content);
         await runQuery(`
           INSERT INTO plots (user_id, story_id, title, structure_type, acts, branches)
@@ -183,11 +177,9 @@ router.post('/', authenticateToken, async (req, res) => {
         console.log(`Auto-generated content for story ${storyId}: character "${characterData.name}" and plot "${plotData.title}"`);
       } catch (genError) {
         console.error('Error auto-generating content:', genError);
-        // Don't fail the story creation if auto-generation fails
       }
     }
     
-    // Get the created story with generated content
     const createdStory = await getRow('SELECT * FROM stories WHERE id = ?', [storyId]);
     
     res.status(201).json({
