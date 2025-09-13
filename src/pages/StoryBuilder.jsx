@@ -61,11 +61,21 @@ const StoryBuilder = () => {
       
       let messages = [];
       if (story.content && Array.isArray(story.content)) {
-        messages = story.content.map(msg => ({
-          type: msg.type || 'ai',
-          content: msg.content || '',
-          timestamp: msg.timestamp || new Date().toLocaleTimeString()
-        }));
+          messages = story.content.map(msg => {
+            let contentText = '';
+            if (typeof msg.content === 'string') {
+              contentText = msg.content;
+            } else if (Array.isArray(msg.content)) {
+              contentText = msg.content.map(c => (typeof c === 'string' ? c : (c && c.content) ? c.content : JSON.stringify(c))).join('\n\n');
+            } else if (msg.content !== undefined && msg.content !== null) {
+              contentText = typeof msg.content === 'object' ? JSON.stringify(msg.content) : String(msg.content);
+            }
+            return {
+              type: msg.type || 'ai',
+              content: contentText,
+              timestamp: msg.timestamp || new Date().toLocaleTimeString()
+            };
+          });
       } else if (story.content && typeof story.content === 'string') {
         const lines = story.content.split('\n\n');
         messages = lines.map(line => {
@@ -119,12 +129,14 @@ const StoryBuilder = () => {
       timestamp: new Date().toLocaleTimeString()
     };
     
-    setStoryHistory(prev => [...prev, userMessage]);
+    // build the updated history locally so subsequent logic uses the fresh state
+    const newHistoryAfterUser = [...storyHistory, userMessage];
+    setStoryHistory(newHistoryAfterUser);
     setUserInput('');
     
     try {
       
-      const fullStoryContent = [...storyHistory, userMessage]
+      const fullStoryContent = newHistoryAfterUser
         .map(msg => `${msg.type === 'user' ? 'You' : 'Mythos AI'}: ${msg.content}`)
         .join('\n\n');
       const response = await api.continueStory({
@@ -138,10 +150,10 @@ const StoryBuilder = () => {
         content: response.continuation,
         timestamp: new Date().toLocaleTimeString()
       };
-      
-      setStoryHistory(prev => [...prev, aiMessage]);
-      
-      if (autoGenerate && storyHistory.length <= 2 && currentStoryId) {
+      const newHistory = [...newHistoryAfterUser, aiMessage];
+      setStoryHistory(newHistory);
+
+      if (autoGenerate && newHistory.length <= 3 && currentStoryId) {
         await autoGenerateContent(fullStoryContent + '\n\n' + response.continuation);
       }
     } catch (error) {
@@ -164,7 +176,6 @@ const StoryBuilder = () => {
             ...prev,
             characters: [...prev.characters, characterResponse]
           }));
-          console.log('Auto-generated character:', characterResponse.name);
         }
       }
       
@@ -180,8 +191,10 @@ const StoryBuilder = () => {
             ...prev,
             plot: plotResponse
           }));
-          console.log('Auto-generated plot:', plotResponse.title);
         }
+      }
+      if (currentStoryId) {
+        await loadStory(currentStoryId);
       }
     } catch (error) {
       console.error('Error auto-generating content:', error);
@@ -213,6 +226,7 @@ const StoryBuilder = () => {
           genre: currentStory.genre,
           content: storyContent
         });
+        await loadStory(currentStoryId);
       } else {
         const response = await api.createStory({
           title: currentStory.title || 'Untitled Story',
@@ -221,6 +235,7 @@ const StoryBuilder = () => {
           autoGenerate: autoGenerate
         });
         setCurrentStoryId(response.id);
+        if (response.id) await loadStory(response.id);
       }
       
       setShowSaveAnimation(true);
@@ -249,6 +264,7 @@ const StoryBuilder = () => {
           ...prev,
           characters: [...prev.characters, response]
         }));
+        if (currentStoryId) await loadStory(currentStoryId);
         alert(`Character "${response.name}" generated and saved!`);
       }
     } catch (error) {
@@ -276,6 +292,7 @@ const StoryBuilder = () => {
           ...prev,
           plot: response
         }));
+        if (currentStoryId) await loadStory(currentStoryId);
         alert(`Plot "${response.title}" generated and saved!`);
       }
     } catch (error) {
@@ -287,6 +304,35 @@ const StoryBuilder = () => {
     value: story.id,
     label: story.title
   }));
+  const navigate = require('react-router-dom').useNavigate ? require('react-router-dom').useNavigate() : null;
+  const [showSaveWarning, setShowSaveWarning] = useState(false);
+  const [pendingNav, setPendingNav] = useState(null);
+
+  const handleNavigate = async (path) => {
+    if (currentStoryId) {
+      if (navigate) navigate(path);
+      else window.location.href = path;
+      return;
+    }
+    setPendingNav(path);
+    setShowSaveWarning(true);
+  };
+
+  const confirmSaveAndNavigate = async () => {
+    setShowSaveWarning(false);
+    try {
+      await saveStory();
+      if (pendingNav) {
+        if (navigate) navigate(pendingNav);
+        else window.location.href = pendingNav;
+      }
+    } catch (e) {
+      console.error('Error saving before navigation:', e);
+      alert('Could not save the story. Please try again.');
+    } finally {
+      setPendingNav(null);
+    }
+  };
   return (
     <div className="story-builder">
       <SaveAnimation 
@@ -487,7 +533,11 @@ const StoryBuilder = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="no-content">No characters generated yet</p>
+                  <div className="no-content-actions">
+                    <div className="action-buttons">
+                      <button className="btn btn-primary" onClick={() => handleNavigate('/characters')}>Go to Characters</button>
+                    </div>
+                  </div>
                 )}
               </div>
               
@@ -500,9 +550,26 @@ const StoryBuilder = () => {
                     <p className="plot-acts">{currentStory.plot.acts}</p>
                   </div>
                 ) : (
-                  <p className="no-content">No plot generated yet</p>
+                  <div className="no-content-actions">
+                    <div className="action-buttons">
+                      <button className="btn btn-primary" onClick={() => handleNavigate('/plot')}>Go to Plot Builder</button>
+                    </div>
+                  </div>
                 )}
               </div>
+
+              {showSaveWarning && (
+                <div className="modal-overlay" role="dialog" aria-modal="true" onClick={() => setShowSaveWarning(false)}>
+                  <div className="modal-content card" onClick={e => e.stopPropagation()}>
+                    <h3>Save Required</h3>
+                    <p>You need to save your story before navigating. Changes will only be saved once the story is saved. Do you want to save now?</p>
+                    <div className="form-actions">
+                      <ScrollButton variant="secondary" onClick={confirmSaveAndNavigate}>Save and Continue</ScrollButton>
+                      <ScrollButton variant="ghost" onClick={() => setShowSaveWarning(false)}>Cancel</ScrollButton>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -511,18 +578,27 @@ const StoryBuilder = () => {
   );
 };
 const TypewriterText = ({ text }) => {
+  const normalized = typeof text === 'string' ? text : (text === undefined || text === null ? '' : String(text));
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+
   useEffect(() => {
-    if (currentIndex < text.length) {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [normalized]);
+
+  useEffect(() => {
+    if (!normalized) return;
+    if (currentIndex < normalized.length) {
       const timer = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
+        setDisplayedText(prev => prev + normalized[currentIndex]);
         setCurrentIndex(prev => prev + 1);
       }, 30);
-      
+
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, text]);
+  }, [currentIndex, normalized]);
+
   return (
     <p className="typewriter-text">
       {displayedText}

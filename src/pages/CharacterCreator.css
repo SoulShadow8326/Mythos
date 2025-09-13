@@ -1,3 +1,13 @@
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+.character-creator {
+  min-height: 100vh;
+  padding: 40px 0;
+  animation: fadeInUp 0.8s ease-out;
+}
+/* Styles for Character Creator page */
 .character-creator {
   min-height: 100vh;
   padding: 40px 0;
@@ -31,7 +41,7 @@
 }
 .character-form:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.08);
 }
 .character-form h2 {
   font-family: var(--font-primary);
@@ -62,11 +72,11 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 .form-group:hover label {
   color: var(--text-primary);
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 .form-actions {
   display: flex;
@@ -83,11 +93,11 @@
 }
 .characters-grid .character-card {
   animation: cardSlideIn 0.6s ease-out;
-  transition: all 0.3s ease;
-  border: 2px solid var(--text-primary);
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 .characters-grid .character-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-6px) scale(1.01);
 }
 .empty-characters {
   display: flex;
@@ -99,101 +109,80 @@
   color: var(--text-secondary);
   animation: fadeInUp 0.8s ease-out 0.6s both;
   grid-column: 1 / -1;
-  min-height: 400px;
+  min-height: 300px;
 }
 .empty-characters .empty-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  opacity: 0.6;
+  font-size: 3.5rem;
+  margin-bottom: 18px;
+  opacity: 0.65;
   font-family: var(--font-primary);
   color: var(--accent-primary);
 }
 .empty-characters h3 {
   font-family: var(--font-primary);
-  font-size: 1.8rem;
-  margin-bottom: 12px;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
   color: var(--accent-primary);
 }
 .empty-characters p {
   font-family: var(--font-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
-  max-width: 400px;
-  opacity: 0.8;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  max-width: 420px;
+  opacity: 0.85;
 }
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-@keyframes cardSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes cardSlideIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
 @media (max-width: 768px) {
-  .creator-header {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  .creator-header h1 {
-    font-size: 2.5rem;
-  }
-  
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .characters-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-} 
+  .creator-header { flex-direction: column; gap: 18px; text-align: center; }
+  .creator-header h1 { font-size: 2.4rem; }
+  .form-grid { grid-template-columns: 1fr; gap: 14px; }
+  .form-actions { flex-direction: column; align-items: center; }
+  .characters-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* end */
+
+/* Modal styles for the create/edit form */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 24px;
+}
+.modal-content {
+  width: 820px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 20px 24px 28px 24px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  background: linear-gradient(180deg, rgba(20,20,20,0.98), rgba(12,12,12,0.98));
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .modal-content { width: 92%; padding: 16px; }
+}

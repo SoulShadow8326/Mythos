@@ -6,6 +6,7 @@ const path = require('path');
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
+const { initDatabase } = require('./database');
 app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -50,9 +51,17 @@ app.use((err, req, res, next) => {
     message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
   });
 });
-app.listen(PORT, () => {
-  console.log(`Mythos server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
-  console.log(`Frontend served at: http://localhost:${PORT}`);
-}); 
+// Initialize the database tables before starting the server
+initDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Mythos server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`Health check: http://localhost:${PORT}/api/health`);
+      console.log(`Frontend served at: http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to initialize database, server not started:', err);
+    process.exit(1);
+  });

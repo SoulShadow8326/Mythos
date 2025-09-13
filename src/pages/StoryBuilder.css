@@ -1,3 +1,7 @@
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
 .story-builder {
   min-height: 100vh;
   padding: 40px 0;
@@ -389,6 +393,31 @@
   font-style: italic;
   margin-top: 8px;
 }
+/* Actions shown when no generated content exists */
+.no-content-actions {
+  text-align: center;
+  color: #ccc;
+  padding: 12px;
+}
+.no-content-actions p {
+  margin-bottom: 12px;
+}
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.action-buttons .btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+.btn-primary {
+  background: #ffffff;
+  color: #000000;
+}
+.btn-primary:hover { opacity: 0.95; }
 @media (max-width: 1024px) {
   .builder-container {
     padding: 20px;

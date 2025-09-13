@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const geminiService = require('../services/geminiService');
+const { authenticateToken } = require('../middleware/auth');
 router.get('/health', async (req, res) => {
   try {
     const testPrompt = "Respond with 'OK' if you can process this request. Do not use any emojis in your response.";
@@ -273,7 +274,7 @@ router.post('/writing-prompts', async (req, res) => {
     }
   }
 });
-router.post('/generate-character-from-story', async (req, res) => {
+router.post('/generate-character-from-story', authenticateToken, async (req, res) => {
   try {
     const { storyContent, characterName, storyId } = req.body;
     
@@ -325,7 +326,7 @@ router.post('/generate-character-from-story', async (req, res) => {
     }
   }
 });
-router.post('/generate-plot-from-story', async (req, res) => {
+router.post('/generate-plot-from-story', authenticateToken, async (req, res) => {
   try {
     const { storyContent, plotType, storyId } = req.body;
     
